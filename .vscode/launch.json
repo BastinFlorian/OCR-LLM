@@ -1,0 +1,19 @@
+// Streamlit
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Launch Streamlit",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "/Users/florian.bastin/Documents/code/octo/Accor/OCR-LLM/.venv/bin/streamlit",
+            "console": "integratedTerminal",
+            "justMyCode": false,
+            "envFile": "${workspaceFolder}/.env",
+            "args": [
+                "run",
+                "PDF_to_OCR_app.py"
+            ]
+        }
+    ]
+}

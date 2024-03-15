@@ -1,0 +1,26 @@
+[tool.poetry]
+name = "ocr-llm"
+version = "0.1.0"
+description = "Use OCR and LLM to answer complex informations in scanned documents"
+authors = ["Florian Bastin <bastinflorian1@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = ">=3.11,<3.12"
+pypdf2 = "^3.0.1"
+ipykernel = "^6.29.3"
+google-cloud-documentai = "^2.24.1"
+openai = "^1.13.3"
+langchain-openai = "^0.0.8"
+langchain-text-splitters = "^0.0.1"
+tiktoken = "^0.6.0"
+streamlit = "^1.32.1"
+pdf2image = "^1.17.0"
+streamlit-pdf-viewer = "^0.0.8"
+langchain = "^0.1.12"
+chromadb = "^0.4.24"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
