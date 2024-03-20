@@ -1,7 +1,7 @@
 import os
 from typing import Dict, Iterator, List, Tuple
 from data.fees_summaries import FEES_SUMMARIES_PATH
-from src.lib.utils import read_json_from_file, write_in_json_file, write_in_txt_file
+from src.lib.utils import csv_str_to_df, df_to_csv, read_json_from_file, write_in_json_file
 from config.llm import LLM_35, LLM_4
 from config.prompt import FEES_TABLE_GENERATOR_PROMPT, SUMMARIZE_PAGE_WITH_FEES_PROMPT
 from data.summarized_pages import SUMMARIZED_TEXT_PATH
@@ -47,7 +47,9 @@ def generate_fees_table_from_summarized_pages(filepath: str) -> str:
         text=summarized_pages_text
     )
     fees_summary: str = LLM_4.invoke(prompt).content
-    write_in_txt_file(fees_summary, os.path.join(
-        FEES_SUMMARIES_PATH, os.path.basename(filepath).split(".")[0])
+    df = csv_str_to_df(fees_summary)
+    filepath = os.path.join(
+        FEES_SUMMARIES_PATH, os.path.basename(filepath).split(".")[0]
     )
-    return fees_summary
+    df_to_csv(df, filepath)
+    return df

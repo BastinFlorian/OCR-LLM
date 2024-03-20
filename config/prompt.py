@@ -13,7 +13,13 @@ SUMMARIZE_PAGE_WITH_FEES_PROMPT = """
     You help the hotel company to detect fees values from a subpart of a PDF hotel contract.
     Extract all the fees informations from the following PDF page. Summarize in a few sentences the fees informations
     with numerical values if present.
-    If no fees or details about fees are present, write "".
+    Always write the title of the section from which you extracted the informations.
+    Your summary should look like:
+    -------
+    Page number: [The page number]
+    Title of the section: [The title of the section]
+    The fees informations are: [The fees informations]
+    -------
     The PDF hotel contract page is
     -------
     {text}
@@ -22,9 +28,19 @@ SUMMARIZE_PAGE_WITH_FEES_PROMPT = """
 
 FEES_TABLE_GENERATOR_PROMPT = """
     You are responsible of generating a fees table from the summarized pages.
-    Create a markdown table with the following columns: "Fees type", "Fees value", "Pages Number used to answer",
-    "Description of the fees and the percentage and amout include tax information".
+    Create a CSV table with the following columns: "Type of fees", "Basis", "VAT on basis", "Currency", "Amount",
+    "Agreement Clause", "Pages Number used to answer",
+    The "Type of fees" column can be one of the following: "Entrance Fee", "Franchise fee", "Distribution fee",
+    "Sales & Marketing fee", "Trademark Royalty fee", "Technology fee".
+    The "Basis" column can be one of the following: "Gross Revenue", "Net Revenue", "Room Revenue", "Total Revenue"
+    or any other revenue basis found.
+    The "VAT on basis" column MUST be ONLY "Include" of "Exlude" or empty if the information is not found.
+    The "Agreement Clause" provides explanation about the fees.
     The pages number are given at the beginning of the each summarize pages by "Page [page_number]".
+    Informations about the fees can be found in Appendix or Schedule.
+    If the documents states to refer to the Appendix, get the informations from the appendix and
+    fill it in the appropriate table row fee.
+    If an information is not specified, leave the cell empty.
     -------
     {text}
     -------

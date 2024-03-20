@@ -24,6 +24,8 @@ data/pdfs/raw/*
 !data/pdfs/__init__.py
 data/summarized_pages/*
 !data/summarized_pages/__init__.py
+data/human_validated_fees/*
+!data/human_validated_fees/__init__.py
 
 
 

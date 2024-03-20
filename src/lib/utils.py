@@ -1,8 +1,11 @@
+from io import StringIO
 import json
 import os
 import shutil
 from typing import Any
 from PyPDF2 import PdfWriter, PdfReader
+import pandas as pd
+import openpyxl
 
 
 def create_directory_if_not_exists(directory):
@@ -88,3 +91,28 @@ def list_txt_file_in_directory(directory):
         if file.endswith(".txt"):
             txt_files.append(os.path.join(directory, file))
     return txt_files
+
+
+def list_csv_file_in_directory(directory):
+    csv_files = []
+    for file in os.listdir(directory):
+        if file.endswith(".csv"):
+            csv_files.append(os.path.join(directory, file))
+    return csv_files
+
+
+def csv_str_to_df(csv_str: str) -> pd.DataFrame:
+    input = StringIO(csv_str)
+    return pd.read_csv(input, sep=",")
+
+
+def df_to_xlsx(df: pd.DataFrame, filepath: str):
+    if not filepath.endswith(".xlsx"):
+        filepath += ".xlsx"
+    df.to_excel(filepath, index=False)
+
+
+def df_to_csv(df: pd.DataFrame, filepath: str):
+    if not filepath.endswith(".csv"):
+        filepath += ".csv"
+    df.to_csv(filepath, index=False)
