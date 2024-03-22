@@ -17,15 +17,17 @@ def enhance_ocr_using_gpt_3_5(filepath, batch_size=10) -> Iterator[Tuple[float, 
         if batch_size == 1:
             results: List[str] = [LLM_35.invoke(prompts).content]
             improved_texts.append(results)
-            yield i / batch_number, results
+            progress_percent = i / batch_number
+            yield progress_percent, results
         else:
             results: List[str] = [
                 answer.content for answer in LLM_35.batch(prompts)
             ]
             improved_texts.extend(results)
-            yield i / batch_number, results
+            progress_percent = i / batch_number
+            yield progress_percent, results
 
     write_in_json_file(
-        data={i: text for i, text in enumerate(improved_texts)},
+        data={i + 1: text for i, text in enumerate(improved_texts)},
         filepath=os.path.join(IMPROVED_TEXT_PATH, os.path.basename(filepath))
     )

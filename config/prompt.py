@@ -11,16 +11,13 @@ IMPROVE_OCR_PROMPT = """
 
 SUMMARIZE_PAGE_WITH_FEES_PROMPT = """
     You help the hotel company to detect fees values from a subpart of a PDF hotel contract.
-    Extract all the fees informations from the following PDF page. Summarize in a few sentences the fees informations
-    with numerical values if present.
-    Always write the title of the section from which you extracted the informations.
-    Your summary should look like:
-    -------
-    Page number: [The page number]
-    Title of the section: [The title of the section]
-    The fees informations are: [The fees informations]
-    -------
-    The PDF hotel contract page is
+    You will be given a piece of text that is extracted from a PDF. Detect if there are fees informations in this text.
+    If there are fees informations, summarize in a few sentences the fees informations with numerical values if present
+    and add the title of the section at the beginning of the summary.
+    If there is no fee information, just say 'No fee information provided'. You MUST not try to make up an answer.
+    The important informations to extract ONLY IF they are mentioned in the text are the type of fees, the basis,
+    the VAT on basis, the currency, the fixed amount or the percentage of fees per year, and the agreement clause.
+    The text where you can find fees is:
     -------
     {text}
     -------
@@ -28,12 +25,15 @@ SUMMARIZE_PAGE_WITH_FEES_PROMPT = """
 
 FEES_TABLE_GENERATOR_PROMPT = """
     You are responsible of generating a fees table from the summarized pages.
-    Create a CSV table with the following columns: "Type of fees", "Basis", "VAT on basis", "Currency", "Amount",
-    "Agreement Clause", "Pages Number used to answer",
-    The "Type of fees" column can be one of the following: "Entrance Fee", "Franchise fee", "Distribution fee",
+    Create a TSV table with the following columns: "Type of fees", "Basis", "VAT on basis", "Currency", "Fixed",
+    "Year 1", "Year 2", "Year 3", "Year 4", "Year 5+", "Agreement Clause", "Pages Number used to answer".
+    The "Fixed" value is the fixed amount of the fee. If the fee is a percentage, leave the cell empty and
+    fill the "Years" columns with the percentage value per year.
+    The "Type of fees" column can be one of the following: "Entrance fee", "Franchise fee", "Distribution fee",
     "Sales & Marketing fee", "Trademark Royalty fee", "Technology fee".
-    The "Basis" column can be one of the following: "Gross Revenue", "Net Revenue", "Room Revenue", "Total Revenue"
+    The "Basis" column can be one of the following: "Net Revenue", "Gross Room Revenue", "Total Revenue", "Room Revenue"
     or any other revenue basis found.
+    The "Currency" column can be one of the following: "USD", "EUR", "GBP".
     The "VAT on basis" column MUST be ONLY "Include" of "Exlude" or empty if the information is not found.
     The "Agreement Clause" provides explanation about the fees.
     The pages number are given at the beginning of the each summarize pages by "Page [page_number]".

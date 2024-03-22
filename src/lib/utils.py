@@ -5,7 +5,6 @@ import shutil
 from typing import Any
 from PyPDF2 import PdfWriter, PdfReader
 import pandas as pd
-import openpyxl
 
 
 def create_directory_if_not_exists(directory):
@@ -32,7 +31,7 @@ def split_pdf_pages(input_path, output_dir):
     for i in range(len(input_pdf.pages)):
         output = PdfWriter()
         output.add_page(input_pdf.pages[i])
-        with open(os.path.join(output_dir, f"page_{i}.pdf"), "wb") as output_stream:
+        with open(os.path.join(output_dir, f"page_{i+1}.pdf"), "wb") as output_stream:
             output.write(output_stream)
 
 
@@ -64,7 +63,7 @@ def write_in_json_file(data: dict[Any, Any], filepath):
     if not filepath.endswith(".json"):
         filepath += ".json"
 
-    json_object = json.dumps(data)
+    json_object = json.dumps(data, indent=4)
     with open(filepath, "w") as f:
         f.write(json_object)
 
@@ -101,9 +100,22 @@ def list_csv_file_in_directory(directory):
     return csv_files
 
 
+def list_tsv_file_in_directory(directory: str) -> list[str]:
+    csv_files = []
+    for file in os.listdir(directory):
+        if file.endswith(".tsv"):
+            csv_files.append(os.path.join(directory, file))
+    return csv_files
+
+
 def csv_str_to_df(csv_str: str) -> pd.DataFrame:
     input = StringIO(csv_str)
     return pd.read_csv(input, sep=",")
+
+
+def tsv_str_to_df(csv_str: str) -> pd.DataFrame:
+    input = StringIO(csv_str)
+    return pd.read_csv(input, sep="\t")
 
 
 def df_to_xlsx(df: pd.DataFrame, filepath: str):
@@ -116,3 +128,9 @@ def df_to_csv(df: pd.DataFrame, filepath: str):
     if not filepath.endswith(".csv"):
         filepath += ".csv"
     df.to_csv(filepath, index=False)
+
+
+def df_to_tsv(df: pd.DataFrame, filepath: str):
+    if not filepath.endswith(".tsv"):
+        filepath += ".tsv"
+    df.to_csv(filepath, index=False, sep="\t")

@@ -30,18 +30,19 @@ def document_ai_ocr_from_pdf(pdf_path: str) -> Iterator[Tuple[str, float]]:
     splitted_pdf_directory = os.path.join(
         SPLITTED_PDF_PATH, pdf_filename.split(".")[0])
 
-    # Process each page of the PDF in the good order
-    i = 0
+    # Process each page of the PDF in the good order, start at page 1
+    i = 1
     extracted_text: dict = {}
     pdf_page_path = f"{splitted_pdf_directory}/page_{i}.pdf"
     page_number = len(os.listdir(splitted_pdf_directory))
     while os.path.isfile(pdf_page_path):
         print(f"Processing {pdf_page_path}: page {i}")
         page_text = document_ai_handler.process_pdf(pdf_page_path)
-        extracted_text["page_" + str(i)] = page_text
+        extracted_text[i] = page_text
+        progress_percent = i / page_number
         i += 1
         pdf_page_path = f"{splitted_pdf_directory}/page_{i}.pdf"
-        yield page_text, i / page_number
+        yield page_text, progress_percent
 
     # Save extracted text in a txt file
     write_in_json_file(extracted_text, os.path.join(
